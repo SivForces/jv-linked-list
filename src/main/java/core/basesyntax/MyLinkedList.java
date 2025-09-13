@@ -47,14 +47,14 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         int i = 0;
         if(index == 0) {
             if (isEmpty()) {
-                addStartEmpty(value, index);
+                addStartEmpty(value);
                 return;
             } else {
-                addStart(value, index);
+                addStart(value);
                 return;
             }
         } else if (index == size) {
-            addEnd(value, index);
+            addEnd(value);
             return;
         }
         while (current != null) {
@@ -77,12 +77,24 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
 
     @Override
     public void addAll(List<T> list) {
-
+        for (T element : list) {
+            addEnd(element);
+        }
     }
 
     @Override
     public T get(int index) {
-        return null;
+        rightIndex(index);
+        int i = 0;
+        Node<T> current = head;
+        while (current != null) {
+            if(i == index) {
+                return current.item;
+            } else {
+                i += i;
+            }
+            current = current.next;
+        }
     }
 
     @Override
@@ -116,14 +128,14 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         }
     }
 
-    public void addStartEmpty(T value, int index) {
+    public void addStartEmpty(T value) {
         Node <T> item = new Node<T>(null, value, null);
         head = item;
         tail = item;
         size++;
     }
 
-    public void addStart(T value, int index) {
+    public void addStart(T value) {
         Node<T> item = new Node<T>(null, value, head);
         item.next = head;
         head.prev = item;
@@ -131,7 +143,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         size++;
     }
 
-    public void addEnd(T value, int index) {
+    public void addEnd(T value) {
         Node <T> item = new Node<T>(tail, value, null);
         tail.next = item;
         item.prev = tail;
