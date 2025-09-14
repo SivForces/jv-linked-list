@@ -79,7 +79,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
     @Override
     public void addAll(List<T> list) {
         for (T element : list) {
-            addEnd(element);
+            add(element);
         }
     }
 
@@ -102,56 +102,25 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
     @Override
     public T set(T value, int index) {
         checkAccessIndex(index);
-        int i = 0;
-        Node<T> current = head;
-        while (current != null) {
-            if (i == index) {
-                T deletedItem = current.item;
-                current.item = value;
-                return deletedItem;
-            } else {
-                i++;
-            }
-            current = current.next;
-        }
-        throw new IndexOutOfBoundsException("Index: " + index);
+        Node<T> node = findNodeByIndex(index);
+        T oldItem = node.item;
+        node.item = value;
+        return oldItem;
     }
 
     @Override
     public T remove(int index) {
         checkAccessIndex(index);
-        int i = 0;
-        Node<T> current = head;
-        while (current != null) {
-            if (index == 0) {
-                T removedItem = head.item;
-                removeStart();
-                return removedItem;
-            } else if (index == size - 1) {
-                T removedItem = tail.item;
-                removeEnd();
-                return removedItem;
-            } else if (i == index) {
-                final T removedItem = current.item;
-                current.next.prev = current.prev;
-                current.prev.next = current.next;
-                size--;
-                return removedItem;
-            }
-            i++;
-            current = current.next;
-        }
-        throw new IndexOutOfBoundsException("Index: " + index);
+        Node<T> node = findNodeByIndex(index);
+        return unlink(node);
     }
 
     @Override
     public boolean remove(T object) {
         Node<T> current = head;
         while (current != null) {
-            object == null ? node.item == null : object.equals(node.item) {
-                current.next.prev = current.prev;
-                current.prev.next = current.next;
-                size--;
+            if (object == null ? current.item == null : object.equals(current.item)) {
+                unlink(current);
                 return true;
             }
             current = current.next;
@@ -169,26 +138,26 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         return size == 0;
     }
 
-    public void checkIndex(int index) {
+    private void checkIndex(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 
-    public void checkAccessIndex(int index) {
+    private void checkAccessIndex(int index) {
         if (index < 0 || index >= size - 1) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 
-    public void addStartEmpty(T value) {
+    private void addStartEmpty(T value) {
         Node<T> item = new Node<>(null, value, null);
         head = item;
         tail = item;
         size++;
     }
 
-    public void addStart(T value) {
+    private void addStart(T value) {
         Node<T> item = new Node<>(null, value, head);
         item.next = head;
         head.prev = item;
@@ -196,7 +165,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         size++;
     }
 
-    public void addEnd(T value) {
+    private void addEnd(T value) {
         Node<T> item = new Node<>(tail, value, null);
         tail.next = item;
         item.prev = tail;
@@ -224,5 +193,30 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         return deletedItem;
     }
 
+    private Node<T> findNodeByIndex(int index) {
+        Node<T> current;
+        if (index < size / 2) {
+            current = head;
+            int i = 0;
+            while (current != null) {
+                if (i == index) {
+                    return current;
+                }
+                i++;
+                current = current.next;
+            }
+        } else {
+            current = tail;
+            int i = size - 1;
+            while (current != null) {
+                if (i == index) {
+                    return current;
+                }
+                current = current.prev;
+                i--;
+            }
+        }
+        throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+    }
 
 }
