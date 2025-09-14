@@ -43,7 +43,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
 
     @Override
     public void add(T value, int index) {
-        rightIndex(index);
+        checkIndex(index);
         Node<T> current = head;
         int i = 0;
         if (index == 0) {
@@ -85,7 +85,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
 
     @Override
     public T get(int index) {
-        rightIndex(index);
+        checkAccessIndex(index);
         int i = 0;
         Node<T> current = head;
         while (current != null) {
@@ -101,13 +101,14 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
 
     @Override
     public T set(T value, int index) {
-        rightIndex(index);
+        checkAccessIndex(index);
         int i = 0;
         Node<T> current = head;
         while (current != null) {
             if (i == index) {
+                T deletedItem = current.item;
                 current.item = value;
-                return current.item;
+                return deletedItem;
             } else {
                 i++;
             }
@@ -118,7 +119,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
 
     @Override
     public T remove(int index) {
-        rightIndex(index);
+        checkAccessIndex(index);
         int i = 0;
         Node<T> current = head;
         while (current != null) {
@@ -147,7 +148,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
     public boolean remove(T object) {
         Node<T> current = head;
         while (current != null) {
-            if (current.item == object) {
+            object == null ? node.item == null : object.equals(node.item) {
                 current.next.prev = current.prev;
                 current.prev.next = current.next;
                 size--;
@@ -168,8 +169,14 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         return size == 0;
     }
 
-    public void rightIndex(int index) {
+    public void checkIndex(int index) {
         if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+    }
+
+    public void checkAccessIndex(int index) {
+        if (index < 0 || index >= size - 1) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
@@ -197,15 +204,25 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
         size++;
     }
 
-    public void removeStart() {
-        head = head.next;
-        head.next.prev = null;
+    private T unlink(Node<T> node) {
+        T deletedItem = node.item;
+        if (node.prev != null) {
+            node.prev.next = node.next;
+        }
+        if (node.next != null) {
+            node.next.prev = node.prev;
+        }
+        if (node == head) {
+            head = node.next;
+        }
+        if (node == tail) {
+            tail = node.prev;
+        }
+        node.prev = null;
+        node.next = null;
         size--;
+        return deletedItem;
     }
 
-    public void removeEnd() {
-        tail = tail.prev;
-        tail.prev.next = null;
-        size--;
-    }
+
 }
