@@ -139,13 +139,13 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
     }
 
     private void checkIndex(int index) {
-        if (index < 0 || index >= size) {
+        if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 
     private void checkAccessIndex(int index) {
-        if (index < 0 || index >= size - 1) {
+        if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
@@ -174,7 +174,7 @@ public class MyLinkedList<T> implements MyLinkedListInterface<T> {
     }
 
     private T unlink(Node<T> node) {
-        T deletedItem = node.item;
+        final T deletedItem = node.item;
         if (node.prev != null) {
             node.prev.next = node.next;
         }
